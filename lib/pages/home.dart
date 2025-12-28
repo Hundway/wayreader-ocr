@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'dart:convert';
 import 'ocr.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -165,13 +164,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<File>> _loadAssetImages() async {
-    final manifestContent = await DefaultAssetBundle.of(
-      this.context,
-    ).loadString('AssetManifest.json');
+    final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
 
-    final manifestMap = Map<String, dynamic>.from(json.decode(manifestContent));
-
-    final assetPaths = manifestMap.keys.where(
+    final assetPaths = manifest.listAssets().where(
       (p) =>
           p.startsWith('assets/images/') &&
           (p.endsWith('.png') || p.endsWith('.jpg') || p.endsWith('.jpeg')),
